@@ -8,6 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: .   # 🔥 ensures root folder
+
     steps:
       - uses: actions/checkout@v3
 
