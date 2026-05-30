@@ -17,7 +17,7 @@ jobs:
 
       - run:
           name: Run tests
-          command: npm test -- --watchAll=false --passWithNoTests
+          command: npm test -- --watchAll=false --passWithNoTests --forceExit
 
   build-node:
     executor:
