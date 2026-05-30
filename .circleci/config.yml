@@ -1,0 +1,55 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5
+
+jobs:
+  test-node:
+    executor:
+      name: node/default
+      tag: "22.14"
+
+    steps:
+      - checkout
+
+      - node/install-packages:
+          pkg-manager: npm
+
+      - run:
+          name: Run tests
+          command: npm test -- --watchAll=false --passWithNoTests
+
+  build-node:
+    executor:
+      name: node/default
+      tag: "22.14"
+
+    steps:
+      - checkout
+
+      - node/install-packages:
+          pkg-manager: npm
+
+      - run:
+          name: Build Application
+          command: npm run build
+
+      - run:
+          name: Create Artifacts Directory
+          command: mkdir -p ~/artifacts
+
+      - run:
+          name: Copy Artifacts
+          command: cp -R build ~/artifacts 2>/dev/null || true
+
+      - store_artifacts:
+          path: ~/artifacts
+          destination: node-build
+
+workflows:
+  build-and-test:
+    jobs:
+      - test-node
+      - build-node:
+          requires:
+            - test-node

@@ -3,6 +3,7 @@ import { auth } from "./firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { validate } from "./validation";
 
+
 export default function Register() {
   const [form, setForm] = useState({});
 

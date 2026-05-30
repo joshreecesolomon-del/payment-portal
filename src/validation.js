@@ -4,6 +4,10 @@ export const validate = (data) => {
   const amountRegex = /^[0-9]+(\.[0-9]{1,2})?$/;
   const swiftRegex = /^[A-Z0-9]{8,11}$/;
 
+  // NEW PASSWORD REGEX
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
   if (data.name && !nameRegex.test(data.name)) {
     return "Invalid name (letters only)";
   }
@@ -18,6 +22,11 @@ export const validate = (data) => {
 
   if (data.swift && !swiftRegex.test(data.swift)) {
     return "Invalid SWIFT code";
+  }
+
+  // PASSWORD VALIDATION
+  if (data.password && !passwordRegex.test(data.password)) {
+    return "Password must contain uppercase, lowercase, number, special character and be at least 8 characters";
   }
 
   return null;
