@@ -4,52 +4,93 @@ orbs:
   node: circleci/node@5
 
 jobs:
-  test-node:
+
+  install:
     executor:
       name: node/default
       tag: "22.14"
-
     steps:
       - checkout
-
       - node/install-packages:
           pkg-manager: npm
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
 
+  test:
+    executor:
+      name: node/default
+      tag: "22.14"
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
       - run:
-          name: Run tests
+          name: Run Tests
           command: npm test -- --watchAll=false --passWithNoTests
 
-  build-node:
+  security-scan:
     executor:
       name: node/default
       tag: "22.14"
-
     steps:
       - checkout
-
-      - node/install-packages:
-          pkg-manager: npm
-
+      - attach_workspace:
+          at: .
       - run:
-          name: Build Application
+          name: Dependency Vulnerability Scan
+          command: npm audit --audit-level=high || true
+
+  sonar-scan:
+    docker:
+      - image: sonarsource/sonar-scanner-cli:latest
+    steps:
+      - checkout
+      - run:
+          name: SonarQube Analysis
+          command: |
+            sonar-scanner \
+              -Dsonar.projectKey=payment-portal \
+              -Dsonar.sources=src \
+              -Dsonar.host.url=$SONAR_HOST_URL \
+              -Dsonar.login=$SONAR_TOKEN
+
+  build:
+    executor:
+      name: node/default
+      tag: "22.14"
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build React App
           command: npm run build
-
       - run:
-          name: Create Artifacts Directory
+          name: Create Artifacts
           command: mkdir -p ~/artifacts
-
       - run:
-          name: Copy Artifacts
-          command: cp -R build ~/artifacts 2>/dev/null || true
-
+          name: Copy Build Files
+          command: cp -R build ~/artifacts
       - store_artifacts:
           path: ~/artifacts
-          destination: node-build
+          destination: build-output
 
 workflows:
-  build-and-test:
+  devsecops-pipeline:
     jobs:
-      - test-node
-      - build-node:
+      - install
+      - test:
           requires:
-            - test-node
+            - install
+      - security-scan:
+          requires:
+            - install
+      - sonar-scan:
+          requires:
+            - test
+      - build:
+          requires:
+            - test
+            - security-scan
