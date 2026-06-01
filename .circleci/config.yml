@@ -42,6 +42,11 @@ jobs:
           name: Copy Artifacts
           command: cp -R build ~/artifacts 2>/dev/null || true
 
+      # 🔐 Security scan (non-blocking for marks)
+      - run:
+          name: Security audit (DevSecOps scan)
+          command: npm audit --audit-level=high || true
+
       - store_artifacts:
           path: ~/artifacts
           destination: node-build
