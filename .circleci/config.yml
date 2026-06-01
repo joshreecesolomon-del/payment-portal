@@ -16,12 +16,8 @@ jobs:
           pkg-manager: npm
 
       - run:
-          name: Audit dependencies
-          command: npm audit || true
-
-      - run:
           name: Run tests
-          command: npm test -- --watchAll=false --passWithNoTests --forceExit
+          command: npm test -- --watchAll=false --passWithNoTests
 
   build-node:
     executor:
@@ -45,6 +41,11 @@ jobs:
       - run:
           name: Copy Artifacts
           command: cp -R build ~/artifacts 2>/dev/null || true
+
+      # 🔐 Security scan (non-blocking for marks)
+      - run:
+          name: Security audit (high severity only)
+          command: npm audit --audit-level=high || true
 
       - store_artifacts:
           path: ~/artifacts
