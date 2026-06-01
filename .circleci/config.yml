@@ -16,6 +16,10 @@ jobs:
           pkg-manager: npm
 
       - run:
+          name: Audit dependencies
+          command: npm audit || true
+
+      - run:
           name: Run tests
           command: npm test -- --watchAll=false --passWithNoTests --forceExit
 
