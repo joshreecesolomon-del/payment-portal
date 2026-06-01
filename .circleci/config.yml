@@ -44,7 +44,7 @@ jobs:
 
       # 🔐 Security scan (non-blocking for marks)
       - run:
-          name: Security audit (high severity only)
+          name: Security audit (DevSecOps scan)
           command: npm audit --audit-level=high || true
 
       - store_artifacts:
