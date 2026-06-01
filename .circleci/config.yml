@@ -93,4 +93,8 @@ workflows:
       - build:
           requires:
             - test
+<<<<<<< HEAD
             - security-scan
+=======
+            - security-scan
+>>>>>>> 332b382 (Mock Firebase components in tests)
