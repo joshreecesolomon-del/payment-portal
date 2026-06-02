@@ -57,7 +57,7 @@ jobs:
               -Dsonar.projectKey=payment-portal \
               -Dsonar.sources=src \
               -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=98be945d390e0c8629a4f646227411ede053f1f9
+              -Dsonar.token=98be945d390e0c8629a4f646227411ede053f1f9
 
   build:
     executor:
