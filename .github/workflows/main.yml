@@ -2,7 +2,8 @@ name: DevSecOps Pipeline
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -19,19 +20,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Verify react-scripts exists
-        run: npx react-scripts --version
+      - name: Verify react-scripts installation
+        run: npm list react-scripts
 
       - name: Run tests
         run: npm test -- --watchAll=false --passWithNoTests
 
-      - name: Build app
+      - name: Build application
         run: npm run build
 
   security:
@@ -45,16 +46,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Run audit (report only)
+      - name: Run dependency audit
         run: npm audit --audit-level=high || true
 
-      - name: Fix safe vulnerabilities
+      - name: Attempt safe fixes
         run: npm audit fix || true
 
   artifacts:
@@ -68,17 +69,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Build app
+      - name: Build application
         run: npm run build
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build
-          path: build
+          name: payment-portal-build
+          path: build/
