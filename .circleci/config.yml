@@ -55,7 +55,7 @@ jobs:
               -Dsonar.organization=joshreecesolomon-del \
               -Dsonar.sources=src \
               -Dsonar.host.url=${SONAR_HOST_URL:-https://sonarcloud.io} \
-              -Dsonar.token=$SONAR_TOKEN
+              -Dsonar.token=${SONAR_TOKEN:-30a8ab75e9877d971c253d5d06b4a662426123d6}
 
   build:
     executor:
