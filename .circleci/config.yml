@@ -47,14 +47,17 @@ jobs:
       - image: sonarsource/sonar-scanner-cli:latest
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: SonarQube Analysis
           command: |
             sonar-scanner \
+              -Dsonar.organization=joshreecesolomon-del \
               -Dsonar.projectKey=payment-portal \
               -Dsonar.sources=src \
-              -Dsonar.host.url=$SONAR_HOST_URL \
-              -Dsonar.login=$SONAR_TOKEN
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=98be945d390e0c8629a4f646227411ede053f1f9
 
   build:
     executor:
@@ -67,14 +70,8 @@ jobs:
       - run:
           name: Build React App
           command: npm run build
-      - run:
-          name: Create Artifacts
-          command: mkdir -p ~/artifacts
-      - run:
-          name: Copy Build Files
-          command: cp -R build ~/artifacts
       - store_artifacts:
-          path: ~/artifacts
+          path: build
           destination: build-output
 
 workflows:
@@ -93,6 +90,4 @@ workflows:
       - build:
           requires:
             - test
-
             - security-scan
-
